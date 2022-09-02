@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, request, abort
 
 from linebot import (
     LineBotApi, WebhookHandler
@@ -54,10 +54,7 @@ def callback():
         abort(400)
 
     return 'OK'
-    
-@app.route('/api', methods=['GET'])
-def get_api():
-    return jsonify(data)
+
 
 if __name__ == "__main__":
     app.run(debug=False)
