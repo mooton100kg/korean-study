@@ -12,7 +12,7 @@ from linebot.models.actions import RichMenuSwitchAction
 from linebot.models.rich_menu import RichMenuAlias
 
 from Constants.RichMenu import *
-from main import line_bot_api
+from app import line_bot_api
 
 def create_action(action):
     if action['type'] == 'uri':
