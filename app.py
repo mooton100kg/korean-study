@@ -72,9 +72,12 @@ from linebot.models import (
 from linebot.models.actions import RichMenuSwitchAction
 from linebot.models.rich_menu import RichMenuAlias
 
-line_bot_api = LineBotApi(CHANNEL_ACCESS_TOKEN)
-handler = WebhookHandler(CHANNEL_SECRET)
+channel_access_token = os.getenv(CHANNEL_SECRET, None)
+if channel_access_token is None:
+    print('Specify LINE_CHANNEL_ACCESS_TOKEN as environment variable.')
+    sys.exit(1)
 
+line_bot_api = LineBotApi(CHANNEL_ACCESS_TOKEN)
 
 def rich_menu_object_a_json():
     return {
