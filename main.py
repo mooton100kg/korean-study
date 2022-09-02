@@ -1,5 +1,4 @@
 from flask import Flask, request, abort
-
 from linebot import (
     LineBotApi, WebhookHandler
 )
@@ -10,13 +9,16 @@ from linebot.models import (
     MessageEvent, TextMessage, TextSendMessage,
     RichMenu, RichMenuArea, RichMenuSize
 )
+from linebot.models.actions import RichMenuSwitchAction
+from linebot.models.rich_menu import RichMenuAlias
 
-from programe.HandleMessage import *
+from Constants.ChannelCode import *
+from Programe.RichMenuCode import RichMenuMain
 
 app = Flask(__name__)
 
-line_bot_api = LineBotApi('A/LutxhuQ5rBx5XTmfo5CyEZA4ov5ijZ7L7KuVzhLEHEVYIvnJV8+XAbvnUtjWfvu60ilWdfR6abusJkuLBNA4TDOGBN1OnSK+qkMTZf8ZzGi3m0oBy5kOzOS6CTc8fZ5mTUULWfWuP39dYo6NynqQdB04t89/1O/w1cDnyilFU=')
-handler = WebhookHandler('65cdcfc23c498613eda60112b5de9421')
+line_bot_api = LineBotApi(CHANNEL_ACCESS_TOKEN)
+handler = WebhookHandler(CHANNEL_SECRET)
 
 @app.route('/')
 def hello():
@@ -41,7 +43,12 @@ def callback():
     return 'OK'
 
 @handler.add(MessageEvent, message=TextMessage)
-handle_message(event)
+def handle_message(event):
+    line_bot_api.reply_message(
+        event.reply_token,
+        TextSendMessage(text=event.message.text))
+
         
 if __name__ == "__main__":
     app.run(debug=False)
+    RichMenuMain()
