@@ -1,54 +1,244 @@
-from flask import Flask, request, abort
+# from flask import Flask, request, abort
+# from linebot import (
+#     LineBotApi, WebhookHandler
+# )
+# from linebot.exceptions import (
+#     InvalidSignatureError
+# )
+# from linebot.models import (
+#     MessageEvent, TextMessage, TextSendMessage,
+#     RichMenu, RichMenuArea, RichMenuSize
+# )
+# from linebot.models.actions import RichMenuSwitchAction
+# from linebot.models.rich_menu import RichMenuAlias
+
+from Constants.ChannelCode import *
+# from Programe.RichMenuCode import RichMenuMain
+
+# app = Flask(__name__)
+
+# line_bot_api = LineBotApi(CHANNEL_ACCESS_TOKEN)
+# handler = WebhookHandler(CHANNEL_SECRET)
+
+# @app.route('/')
+# def hello():
+#     return "Hello Flask-Heroku"
+
+# @app.route('/callback', methods=['POST'])
+# def callback():
+#     # get X-Line-Signature header value
+#     signature = request.headers['X-Line-Signature']
+
+#     # get request body as text
+#     body = request.get_data(as_text=True)
+#     app.logger.info("Request body: " + body)
+
+#     # handle webhook body
+#     try:
+#         handler.handle(body, signature)
+#     except InvalidSignatureError:
+#         print("Invalid signature. Please check your channel access token/channel secret.")
+#         abort(400)
+
+#     return 'OK'
+
+# @handler.add(MessageEvent, message=TextMessage)
+# def handle_message(event):
+#     line_bot_api.reply_message(
+#         event.reply_token,
+#         TextSendMessage(text=event.message.text))
+
+        
+# if __name__ == "__main__":
+#     app.run(debug=False)
+#     RichMenuMain()
+
+# -*- coding: utf-8 -*-
+
+import os
+import sys
+
 from linebot import (
-    LineBotApi, WebhookHandler
+    LineBotApi,
 )
-from linebot.exceptions import (
-    InvalidSignatureError
-)
+
 from linebot.models import (
-    MessageEvent, TextMessage, TextSendMessage,
-    RichMenu, RichMenuArea, RichMenuSize
+    RichMenu,
+    RichMenuArea,
+    RichMenuSize,
+    RichMenuBounds,
+    URIAction
 )
 from linebot.models.actions import RichMenuSwitchAction
 from linebot.models.rich_menu import RichMenuAlias
 
-from Constants.ChannelCode import *
-from Programe.RichMenuCode import RichMenuMain
-
-app = Flask(__name__)
-
 line_bot_api = LineBotApi(CHANNEL_ACCESS_TOKEN)
 handler = WebhookHandler(CHANNEL_SECRET)
 
-@app.route('/')
-def hello():
-    return "Hello Flask-Heroku"
 
-@app.route('/callback', methods=['POST'])
-def callback():
-    # get X-Line-Signature header value
-    signature = request.headers['X-Line-Signature']
+def rich_menu_object_a_json():
+    return {
+        "size": {
+            "width": 2500,
+            "height": 1686
+        },
+        "selected": False,
+        "name": "richmenu-a",
+        "chatBarText": "Tap to open",
+        "areas": [
+            {
+                "bounds": {
+                    "x": 0,
+                    "y": 0,
+                    "width": 1250,
+                    "height": 1686
+                },
+                "action": {
+                    "type": "uri",
+                    "uri": "https://www.line-community.me/"
+                }
+            },
+            {
+                "bounds": {
+                    "x": 1251,
+                    "y": 0,
+                    "width": 1250,
+                    "height": 1686
+                },
+                "action": {
+                    "type": "richmenuswitch",
+                    "richMenuAliasId": "richmenu-alias-b",
+                    "data": "richmenu-changed-to-b"
+                }
+            }
+        ]
+    }
 
-    # get request body as text
-    body = request.get_data(as_text=True)
-    app.logger.info("Request body: " + body)
 
-    # handle webhook body
-    try:
-        handler.handle(body, signature)
-    except InvalidSignatureError:
-        print("Invalid signature. Please check your channel access token/channel secret.")
-        abort(400)
+def rich_menu_object_b_json():
+    return {
+        "size": {
+            "width": 2500,
+            "height": 1686
+        },
+        "selected": False,
+        "name": "richmenu-b",
+        "chatBarText": "Tap to open",
+        "areas": [
+            {
+                "bounds": {
+                    "x": 0,
+                    "y": 0,
+                    "width": 1250,
+                    "height": 1686
+                },
+                "action": {
+                    "type": "richmenuswitch",
+                    "richMenuAliasId": "richmenu-alias-a",
+                    "data": "richmenu-changed-to-a"
+                }
+            },
+            {
+                "bounds": {
+                    "x": 1251,
+                    "y": 0,
+                    "width": 1250,
+                    "height": 1686
+                },
+                "action": {
+                    "type": "uri",
+                    "uri": "https://www.line-community.me/"
+                }
+            }
+        ]
+    }
 
-    return 'OK'
 
-@handler.add(MessageEvent, message=TextMessage)
-def handle_message(event):
-    line_bot_api.reply_message(
-        event.reply_token,
-        TextSendMessage(text=event.message.text))
+def create_action(action):
+    if action['type'] == 'uri':
+        return URIAction(type=action['type'], uri=action.get('uri'))
+    else:
+        return RichMenuSwitchAction(
+            type=action['type'],
+            rich_menu_alias_id=action.get('richMenuAliasId'),
+            data=action.get('data')
+        )
 
-        
-if __name__ == "__main__":
-    app.run(debug=False)
-    RichMenuMain()
+
+def main():
+    # 2. Create rich menu A (richmenu-a)
+    rich_menu_object_a = rich_menu_object_a_json()
+    areas = [
+        RichMenuArea(
+            bounds=RichMenuBounds(
+                x=info['bounds']['x'],
+                y=info['bounds']['y'],
+                width=info['bounds']['width'],
+                height=info['bounds']['height']
+            ),
+            action=create_action(info['action'])
+        ) for info in rich_menu_object_a['areas']
+    ]
+
+    rich_menu_to_a_create = RichMenu(
+        size=RichMenuSize(width=rich_menu_object_a['size']['width'], height=rich_menu_object_a['size']['height']),
+        selected=rich_menu_object_a['selected'],
+        name=rich_menu_object_a['name'],
+        chat_bar_text=rich_menu_object_a['name'],
+        areas=areas
+    )
+
+    rich_menu_a_id = line_bot_api.create_rich_menu(rich_menu=rich_menu_to_a_create)
+
+    # 3. Upload image to rich menu A
+    with open('./public/richmenu-a.png', 'rb') as f:
+        line_bot_api.set_rich_menu_image(rich_menu_a_id, 'image/png', f)
+
+    # 4. Create rich menu B (richmenu-b)
+    rich_menu_object_b = rich_menu_object_b_json()
+    areas = [
+        RichMenuArea(
+            bounds=RichMenuBounds(
+                x=info['bounds']['x'],
+                y=info['bounds']['y'],
+                width=info['bounds']['width'],
+                height=info['bounds']['height']
+            ),
+            action=create_action(info['action'])
+        ) for info in rich_menu_object_b['areas']
+    ]
+
+    rich_menu_to_b_create = RichMenu(
+        size=RichMenuSize(width=rich_menu_object_b['size']['width'], height=rich_menu_object_b['size']['height']),
+        selected=rich_menu_object_b['selected'],
+        name=rich_menu_object_b['name'],
+        chat_bar_text=rich_menu_object_b['name'],
+        areas=areas
+    )
+
+    rich_menu_b_id = line_bot_api.create_rich_menu(rich_menu=rich_menu_to_b_create)
+
+    # 5. Upload image to rich menu B
+    with open('./public/richmenu-b.png', 'rb') as f:
+        line_bot_api.set_rich_menu_image(rich_menu_b_id, 'image/png', f)
+
+    # 6. Set rich menu A as the default rich menu
+    line_bot_api.set_default_rich_menu(rich_menu_b_id)
+
+    # 7. Create rich menu alias A
+    alias_a = RichMenuAlias(
+        rich_menu_alias_id='richmenu-alias-a',
+        rich_menu_id=rich_menu_a_id
+    )
+    line_bot_api.create_rich_menu_alias(alias_a)
+
+    # 8. Create rich menu alias B
+    alias_b = RichMenuAlias(
+        rich_menu_alias_id='richmenu-alias-b',
+        rich_menu_id=rich_menu_b_id
+    )
+    line_bot_api.create_rich_menu_alias(alias_b)
+    print('success')
+
+
+main()
