@@ -13,7 +13,7 @@ from linebot.models import (
     PostbackEvent, FlexSendMessage,
 )
 
-from Constants import (
+from Constants.ChannelCode import (
     getChannelToken, getChannelSecret
     # ,getFlexMessage,
     # getData,update_data,add_word
