@@ -45,10 +45,6 @@ def callback():
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     line_bot_api.reply_message(
-        event.reply_token,
-        TextSendMessage(text=event.message.text))
-    flex = json.loads(flexmessage())
-    line_bot_api.reply_message(
         event.reply_token, 
         FlexSendMessage(
     alt_text='hello',
@@ -60,10 +56,14 @@ def handle_message(event):
             aspect_ratio='20:13',
             aspect_mode='cover',
             action=URIAction(uri='http://example.com', label='label')
+                            )
+                        )
+                    )     
         )
-    )
-)
-    )
+    line_bot_api.reply_message(
+        event.reply_token,
+        TextSendMessage(text=event.message.text))
+    flex = json.loads(flexmessage())
 
         
 if __name__ == "__main__":
