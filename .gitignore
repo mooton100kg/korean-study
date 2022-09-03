@@ -1,2 +1,6 @@
 venv/
 __pycache__/
+getname.py
+rich_menu.py
+image
+jsonfile
