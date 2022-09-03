@@ -42,18 +42,10 @@ def callback():
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    if (event.message.text == ("hello")):
-        line_bot_api.reply_message(
-            event.reply_token, 
-            FlexSendMessage(
-                alt_text='hello',
-                contents=getFlexMessage()
-            )
-        )
-    elif (event.message.text == ("hi")):
-        line_bot_api.reply_message(
+    if (event.message.text == ("hi")):
+        line_bot_api.reply_messaßge(
             event.reply_token,
-            TextSendMessage(text=event.message.text))
+            TextSendMessage(text=str(event)))
 
 
         
@@ -61,4 +53,4 @@ if __name__ == "__main__":
     app.run(debug=False)
 
 
-
+ß
