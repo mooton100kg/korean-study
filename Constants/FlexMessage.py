@@ -40,6 +40,6 @@ def flexmessage():
             "text": "footer"
         }
         ]
-    }
+        }
     }
     return flex

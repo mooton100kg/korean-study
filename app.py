@@ -48,18 +48,9 @@ def handle_message(event):
         event.reply_token, 
         FlexSendMessage(
     alt_text='hello',
-    contents=BubbleContainer(
-        direction='ltr',
-        hero=ImageComponent(
-            url='https://example.com/cafe.jpg',
-            size='full',
-            aspect_ratio='20:13',
-            aspect_mode='cover',
-            action=URIAction(uri='http://example.com', label='label')
-                            )
-                        )
-                    )     
+    contents=flexmessage()
         )
+    )
     line_bot_api.reply_message(
         event.reply_token,
         TextSendMessage(text=event.message.text))
