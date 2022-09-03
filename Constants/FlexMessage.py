@@ -1,4 +1,4 @@
-def flexmessage():
+def getFlexMessage():
     flex = {
     "type": "bubble",
     "hero": {

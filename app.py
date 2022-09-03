@@ -11,13 +11,12 @@ from linebot.models import (
     URIAction, ImageComponent, BubbleContainer
 )
 
-from Constants.ChannelCode import *
-from Constants.FlexMessage import *
+from Constants import getChannelToken, getChannelSecret,getFlexMessage
 
 app = Flask(__name__)
 
-line_bot_api = LineBotApi(CHANNEL_ACCESS_TOKEN)
-handler = WebhookHandler(CHANNEL_SECRET)
+line_bot_api = LineBotApi(getChannelToken())
+handler = WebhookHandler(getChannelSecret())
 
 @app.route('/')
 def hello():
@@ -43,16 +42,18 @@ def callback():
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    line_bot_api.reply_message(
-        event.reply_token, 
-        FlexSendMessage(
-            alt_text='hello',
-            contents=flexmessage()
+    if (event.message.text == ("hello")):
+        line_bot_api.reply_message(
+            event.reply_token, 
+            FlexSendMessage(
+                alt_text='hello',
+                contents=getFlexMessage()
+            )
         )
-    )
-    line_bot_api.reply_message(
-        event.reply_token,
-        TextSendMessage(text=event.message.text))
+    elif (event.message.text == ("hi")):
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text=event.message.text))
 
 
         
