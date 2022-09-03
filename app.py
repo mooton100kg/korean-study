@@ -10,7 +10,6 @@ from linebot.models import (
     MessageEvent, TextMessage, TextSendMessage, FlexSendMessage,
     URIAction, ImageComponent, BubbleContainer
 )
-import json
 
 from Constants.ChannelCode import *
 from Constants.FlexMessage import *
@@ -47,14 +46,14 @@ def handle_message(event):
     line_bot_api.reply_message(
         event.reply_token, 
         FlexSendMessage(
-    alt_text='hello',
-    contents=flexmessage()
+            alt_text='hello',
+            contents=flexmessage()
         )
     )
     line_bot_api.reply_message(
         event.reply_token,
         TextSendMessage(text=event.message.text))
-    flex = json.loads(flexmessage())
+
 
         
 if __name__ == "__main__":
