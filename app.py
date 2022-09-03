@@ -7,14 +7,12 @@ from linebot.exceptions import (
     InvalidSignatureError
 )
 from linebot.models import (
-    MessageEvent, TextMessage, TextSendMessage,
-    RichMenu, RichMenuArea, RichMenuSize, RichMenuBounds, URIAction
+    MessageEvent, TextMessage, TextSendMessage, FlexSendMessage
 )
-from linebot.models.actions import RichMenuSwitchAction
-from linebot.models.rich_menu import RichMenuAlias
+import json
 
 from Constants.ChannelCode import *
-from Programe.RichMenuCode import RichMenuMain
+from Constants.FlexMessage import *
 
 app = Flask(__name__)
 
@@ -25,42 +23,34 @@ handler = WebhookHandler(CHANNEL_SECRET)
 def hello():
     return "Hello Flask-Heroku"
 
-# @app.route('/callback', methods=['POST'])
-# def callback():
-#     # get X-Line-Signature header value
-#     signature = request.headers['X-Line-Signature']
+@app.route('/callback', methods=['POST'])
+def callback():
+    # get X-Line-Signature header value
+    signature = request.headers['X-Line-Signature']
 
-#     # get request body as text
-#     body = request.get_data(as_text=True)
-#     app.logger.info("Request body: " + body)
+    # get request body as text
+    body = request.get_data(as_text=True)
+    app.logger.info("Request body: " + body)
 
-#     # handle webhook body
-#     try:
-#         handler.handle(body, signature)
-#     except InvalidSignatureError:
-#         print("Invalid signature. Please check your channel access token/channel secret.")
-#         abort(400)
+    # handle webhook body
+    try:
+        handler.handle(body, signature)
+    except InvalidSignatureError:
+        print("Invalid signature. Please check your channel access token/channel secret.")
+        abort(400)
 
-#     return 'OK'
+    return 'OK'
 
-# @handler.add(MessageEvent, message=TextMessage)
-# def handle_message(event):
-#     line_bot_api.reply_message(
-#         event.reply_token,
-#         TextSendMessage(text=event.message.text))
-
-@app.route('/richmenu', methods=['POST'])
-def richmenu():
-    rich_menu_to_create = RichMenu(
-    size=RichMenuSize(width=2500, height=843),
-    selected=False,
-    name="Nice richmenu",
-    chat_bar_text="Tap here",
-    areas=[RichMenuArea(
-        bounds=RichMenuBounds(x=0, y=0, width=2500, height=843),
-        action=URIAction(label='Go to line.me', uri='https://line.me'))]
+@handler.add(MessageEvent, message=TextMessage)
+def handle_message(event):
+    # line_bot_api.reply_message(
+    #     event.reply_token,
+    #     TextSendMessage(text=event.message.text))
+    flex = json.loads(flexmessage())
+    line_bot_api.reply_message(
+        event.reply_token, FlexSendMessage(alt_text="flex", contents=flex)
     )
-    rich_menu_id = line_bot_api.create_rich_menu(rich_menu=rich_menu_to_create)
+
         
 if __name__ == "__main__":
     app.run(debug=False)
