@@ -13,10 +13,10 @@ from linebot.models import (
     PostbackEvent, FlexSendMessage,
 )
 
-from Constants import (
-    getChannelToken, getChannelSecret,getFlexMessage,
-    getData,update_data,add_word
-)
+# from Constants import (
+#     getChannelToken, getChannelSecret,getFlexMessage,
+#     getData,update_data,add_word
+# )
 
 app = Flask(__name__)
 
@@ -52,86 +52,89 @@ def callback():
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    global SPELLING_ORDER, SPELLING
-    if (event.message.text == (DATA_SPELLING['korean'][SPELLING_ORDER]) and SPELLING):
-        update_data(DATA_SPELLING['thai'][SPELLING_ORDER], True, "spelling")
-        if SPELLING_ORDER + 1 < len(DATA_SPELLING['korean']):
-            SPELLING_ORDER += 1
-        else:
-            SPELLING_ORDER = 0
-        line_bot_api.reply_message(
+    line_bot_api.reply_message(
                 event.reply_token,
-                TextSendMessage("SPELLING: "+DATA_SPELLING['thai'][SPELLING_ORDER]))
-    elif (event.message.text != (DATA_SPELLING['korean'][SPELLING_ORDER]) and SPELLING):
-        update_data(DATA_SPELLING['thai'][SPELLING_ORDER], False, "spelling")
-        if SPELLING_ORDER + 1 < len(DATA_SPELLING['korean']):
-            SPELLING_ORDER += 1
-        else:
-            SPELLING_ORDER = 0
-        line_bot_api.reply_message(
-                event.reply_token,
-                [TextSendMessage("CORRECT ANS: " + DATA_SPELLING['thai'][SPELLING_ORDER-1]),
-                TextSendMessage("SPELLING: "+DATA_SPELLING['thai'][SPELLING_ORDER])])
-    elif ADDWORD:
-        if SPELLING:
-            SPELLING = False
-        new_word = event.message.text.split(":")
-        add_word(new_word[0].rstrip().lstrip(), new_word[1].rstrip().lstrip())
+                TextSendMessage(event.message.text))
+    # global SPELLING_ORDER, SPELLING
+    # if (event.message.text == (DATA_SPELLING['korean'][SPELLING_ORDER]) and SPELLING):
+    #     update_data(DATA_SPELLING['thai'][SPELLING_ORDER], True, "spelling")
+    #     if SPELLING_ORDER + 1 < len(DATA_SPELLING['korean']):
+    #         SPELLING_ORDER += 1
+    #     else:
+    #         SPELLING_ORDER = 0
+    #     line_bot_api.reply_message(
+    #             event.reply_token,
+    #             TextSendMessage("SPELLING: "+DATA_SPELLING['thai'][SPELLING_ORDER]))
+    # elif (event.message.text != (DATA_SPELLING['korean'][SPELLING_ORDER]) and SPELLING):
+    #     update_data(DATA_SPELLING['thai'][SPELLING_ORDER], False, "spelling")
+    #     if SPELLING_ORDER + 1 < len(DATA_SPELLING['korean']):
+    #         SPELLING_ORDER += 1
+    #     else:
+    #         SPELLING_ORDER = 0
+    #     line_bot_api.reply_message(
+    #             event.reply_token,
+    #             [TextSendMessage("CORRECT ANS: " + DATA_SPELLING['thai'][SPELLING_ORDER-1]),
+    #             TextSendMessage("SPELLING: "+DATA_SPELLING['thai'][SPELLING_ORDER])])
+    # elif ADDWORD:
+    #     if SPELLING:
+    #         SPELLING = False
+    #     new_word = event.message.text.split(":")
+    #     add_word(new_word[0].rstrip().lstrip(), new_word[1].rstrip().lstrip())
     
 
-@handler.add(PostbackEvent)
-def handle_event(event):
-    global FLASHCARD_ORDER,SPELLING, SPELLING_ORDER, ADDWORD
-    if (event.postback.data == ('flash_card')):
-        if SPELLING or ADDWORD:
-            SPELLING = False
-            ADDWORD = False
-        FLASHCARD_ORDER = 0
-        FLEX['body']['contents'][0]['text'] = DATA_FLASHCARD['korean'][FLASHCARD_ORDER]
-        line_bot_api.reply_message(
-            event.reply_token,
-            FlexSendMessage(alt_text="flash card",contents=FLEX))
-    elif (event.postback.data == ('know')):
-        update_data(DATA_FLASHCARD['korean'][FLASHCARD_ORDER], True, "flashcard")
-        if FLASHCARD_ORDER + 1 < len(DATA_FLASHCARD['korean']):
-            FLASHCARD_ORDER += 1
-        else:
-            FLASHCARD_ORDER = 0
-        FLEX['body']['contents'][0]['text'] = DATA_FLASHCARD['korean'][FLASHCARD_ORDER]
-        line_bot_api.reply_message(
-            event.reply_token,
-            [TextSendMessage(text=DATA_FLASHCARD['thai'][FLASHCARD_ORDER-1]),
-            FlexSendMessage(alt_text="flash card",contents=FLEX)])
-    elif (event.postback.data == ('dont know')):
-        update_data(DATA_FLASHCARD['korean'][FLASHCARD_ORDER], False,"flashcard")
-        if FLASHCARD_ORDER + 1 < len(DATA_FLASHCARD['korean']):
-            FLASHCARD_ORDER += 1
-        else:
-            FLASHCARD_ORDER = 0
-        FLEX['body']['contents'][0]['text'] = DATA_FLASHCARD['korean'][FLASHCARD_ORDER]
-        line_bot_api.reply_message(
-            event.reply_token,
-            [TextSendMessage(text=DATA_FLASHCARD['thai'][FLASHCARD_ORDER-1]),
-            FlexSendMessage(alt_text="flash card",contents=FLEX)])
-    elif (event.postback.data == ('spelling')):
-        SPELLING_ORDER = 0
-        SPELLING = not SPELLING
-        if ADDWORD:
-            ADDWORD = False
-        if SPELLING:
-            line_bot_api.reply_message(
-                event.reply_token,
-                TextSendMessage(text="SPELLING: " + DATA_SPELLING['thai'][SPELLING_ORDER]))
-        else:
-            line_bot_api.reply_message(
-                event.reply_token,
-                TextSendMessage(text="SPELLING: False"))
+# @handler.add(PostbackEvent)
+# def handle_event(event):
+#     global FLASHCARD_ORDER,SPELLING, SPELLING_ORDER, ADDWORD
+#     if (event.postback.data == ('flash_card')):
+#         if SPELLING or ADDWORD:
+#             SPELLING = False
+#             ADDWORD = False
+#         FLASHCARD_ORDER = 0
+#         FLEX['body']['contents'][0]['text'] = DATA_FLASHCARD['korean'][FLASHCARD_ORDER]
+#         line_bot_api.reply_message(
+#             event.reply_token,
+#             FlexSendMessage(alt_text="flash card",contents=FLEX))
+#     elif (event.postback.data == ('know')):
+#         update_data(DATA_FLASHCARD['korean'][FLASHCARD_ORDER], True, "flashcard")
+#         if FLASHCARD_ORDER + 1 < len(DATA_FLASHCARD['korean']):
+#             FLASHCARD_ORDER += 1
+#         else:
+#             FLASHCARD_ORDER = 0
+#         FLEX['body']['contents'][0]['text'] = DATA_FLASHCARD['korean'][FLASHCARD_ORDER]
+#         line_bot_api.reply_message(
+#             event.reply_token,
+#             [TextSendMessage(text=DATA_FLASHCARD['thai'][FLASHCARD_ORDER-1]),
+#             FlexSendMessage(alt_text="flash card",contents=FLEX)])
+#     elif (event.postback.data == ('dont know')):
+#         update_data(DATA_FLASHCARD['korean'][FLASHCARD_ORDER], False,"flashcard")
+#         if FLASHCARD_ORDER + 1 < len(DATA_FLASHCARD['korean']):
+#             FLASHCARD_ORDER += 1
+#         else:
+#             FLASHCARD_ORDER = 0
+#         FLEX['body']['contents'][0]['text'] = DATA_FLASHCARD['korean'][FLASHCARD_ORDER]
+#         line_bot_api.reply_message(
+#             event.reply_token,
+#             [TextSendMessage(text=DATA_FLASHCARD['thai'][FLASHCARD_ORDER-1]),
+#             FlexSendMessage(alt_text="flash card",contents=FLEX)])
+#     elif (event.postback.data == ('spelling')):
+#         SPELLING_ORDER = 0
+#         SPELLING = not SPELLING
+#         if ADDWORD:
+#             ADDWORD = False
+#         if SPELLING:
+#             line_bot_api.reply_message(
+#                 event.reply_token,
+#                 TextSendMessage(text="SPELLING: " + DATA_SPELLING['thai'][SPELLING_ORDER]))
+#         else:
+#             line_bot_api.reply_message(
+#                 event.reply_token,
+#                 TextSendMessage(text="SPELLING: False"))
 
-    elif (event.postback.data == ('add_word')):
-        ADDWORD = not ADDWORD
-        line_bot_api.reply_message(
-            event.reply_token,
-            TextSendMessage(text=f"ADD WORD: {ADDWORD}"))
+#     elif (event.postback.data == ('add_word')):
+#         ADDWORD = not ADDWORD
+#         line_bot_api.reply_message(
+#             event.reply_token,
+#             TextSendMessage(text=f"ADD WORD: {ADDWORD}"))
 
         
 if __name__ == "__main__":
