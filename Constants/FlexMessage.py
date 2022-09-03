@@ -22,33 +22,26 @@ def getFlexMessage():
       {
         "type": "button",
         "style": "primary",
-        "height": "sm",
+        "height": "md",
         "action": {
           "type": "postback",
-          "label": "one",
-          "data": "hello"
+          "label": "know",
+          "data": "know"
         }
       },
       {
         "type": "button",
         "action": {
           "type": "postback",
-          "label": "two",
-          "data": "hello"
+          "label": "don't know",
+          "data": "dont know"
         },
-        "style": "secondary"
-      },
-      {
-        "type": "button",
-        "action": {
-          "type": "postback",
-          "label": "three",
-          "data": "hello"
-        },
-        "style": "primary"
+        "style": "primary",
+        "height": "md"
       }
     ],
     "flex": 0
   }
 }
     return flex
+
