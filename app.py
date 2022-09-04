@@ -23,7 +23,7 @@ line_bot_api = LineBotApi(getChannelToken())
 handler = WebhookHandler(getChannelSecret())
 FLASHCARD_ORDER, SPELLING_ORDER = 0,0
 FLEX = getFlexMessage()
-DATA_FLASHCARD, DATA_SPELLING = getData()
+DATA_FLASHCARD = getData()
 # ADDWORD = False
 # SPELLING = False
 
