@@ -13,19 +13,19 @@ from linebot.models import (
     PostbackEvent, FlexSendMessage,
 )
 
-from Constants import (
-    getChannelToken, getChannelSecret
-)
+from Constants.ChannelCode import getChannelToken, getChannelSecret
+from Constants.FlexMessage import getFlexMessage
+from Constants.spreadsheet import getData
 
 app = Flask(__name__)
 
 line_bot_api = LineBotApi(getChannelToken())
 handler = WebhookHandler(getChannelSecret())
-# FLASHCARD_ORDER, SPELLING_ORDER = 0,0
-# FLEX = getFlexMessage()
-# DATA_FLASHCARD, DATA_SPELLING = getData()
-# ADDWORD = False
-# SPELLING = False
+FLASHCARD_ORDER, SPELLING_ORDER = 0,0
+FLEX = getFlexMessage()
+DATA_FLASHCARD, DATA_SPELLING = getData()
+ADDWORD = False
+SPELLING = False
 
 @app.route('/')
 def hello():
