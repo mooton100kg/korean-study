@@ -13,16 +13,16 @@ from linebot.models import (
     PostbackEvent, FlexSendMessage,
 )
 
-from Constants.ChannelCode import (
-    getChannelToken, getChannelSecret
+# from Constants.ChannelCode import (
+#     getChannelToken, getChannelSecret
     # ,getFlexMessage,
     # getData,update_data,add_word
-)
+# )
 
 app = Flask(__name__)
 
-line_bot_api = LineBotApi(getChannelToken())
-handler = WebhookHandler(getChannelSecret())
+line_bot_api = LineBotApi("xo+F+u8CrA9owOCwb5q6jzn11j4s80V4GepjOWM/k+qu/tFXaQktlpy2fQlQGrAku60ilWdfR6abusJkuLBNA4TDOGBN1OnSK+qkMTZf8ZzpwxGW4buVp9XOwmtZlTYgt2FWPNBvbbwz2ZpCby4regdB04t89/1O/w1cDnyilFU=")
+handler = WebhookHandler("65cdcfc23c498613eda60112b5de9421")
 # FLASHCARD_ORDER, SPELLING_ORDER = 0,0
 # FLEX = getFlexMessage()
 # DATA_FLASHCARD, DATA_SPELLING = getData()
@@ -54,8 +54,8 @@ def callback():
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     line_bot_api.reply_message(
-                event.reply_token,
-                TextSendMessage(event.message.text))
+        event.reply_token,
+        TextSendMessage(event.message.text))
     # global SPELLING_ORDER, SPELLING
     # if (event.message.text == (DATA_SPELLING['korean'][SPELLING_ORDER]) and SPELLING):
     #     update_data(DATA_SPELLING['thai'][SPELLING_ORDER], True, "spelling")
