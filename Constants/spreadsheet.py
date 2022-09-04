@@ -20,7 +20,7 @@ def getData():
     # flashcard_data = records_df.to_dict(orient='list')
     # records_df = pd.DataFrame.from_dict(records_data).sort_values(by=['correct_spelling'])
     # spelling_data = records_df.to_dict(orient='list')
-    
+    #gkfkfk
     return "hello"
 
 # def update_data(word, correct, type):
